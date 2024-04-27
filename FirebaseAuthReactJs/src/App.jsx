@@ -1,30 +1,48 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import './App.css'
-import SignUp from './pages/signup/SignUp';
-import SignIn from './pages/signin/SignIn';
+// import SignUp from './pages/signup/SignUp';
+// import SignIn from './pages/signin/SignIn';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { logout } from './services/firebase/firebase';
+import useAuthorizedHook from './services/firebase/hooks/useAuthorizedHook';
 
 
 function App() {
-  const [currentPage, setCurrentPage] = useState(<SignUp/>); 
+  const navigate = useNavigate(); 
+
+  const {user} = useAuthorizedHook(); 
+  
+  function loggingOut() {
+    logout(); 
+    navigate('/'); 
+  }
   return (
     <div>
       <h1>Home Page</h1>
-      <div style={{display:"flex",justifyContent:"center", gap:"20px"}}>
-        <p onClick={() => setCurrentPage(<SignUp/>)} style={buttonStyle}>signUp</p>
-        <p onClick={() => setCurrentPage(<SignIn/>)} style={buttonStyle}>signIn</p>
+      <div className='flexbox'>
+        {user ? (
+          <button className='linkStyle' onClick={loggingOut}>Logout</button>
+        ): (
+          <>
+            <Link className="linkStyle" to='/'>Sign In</Link>
+            <Link className='linkStyle' to='/signup'>Sign Up</Link>
+          </>
+        )}
       </div>
-      {currentPage}
+      {<Outlet/>}
     </div>
   )
 }
 
-const buttonStyle = {
-  padding:"10px 20px", 
-  border: "2px solid black", 
-  width:"fit-content", 
-  background:"rgba(223, 224,200,0.8)", 
-  borderRadius:"5px", 
-  cursor:"pointer"
-}
+
+
+// const buttonStyle = {
+//   padding:"10px 20px", 
+//   border: "2px solid black", 
+//   width:"fit-content", 
+//   background:"rgba(223, 224,200,0.8)", 
+//   borderRadius:"5px", 
+//   cursor:"pointer"
+// }
 
 export default App

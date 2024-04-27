@@ -1,0 +1,19 @@
+.linkStyle {
+    text-decoration: none;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color:aliceblue;
+    padding: 10px 20px;
+}
+
+.linkStyle:hover {
+    background-color: aquamarine;
+}
+
+.flexbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+

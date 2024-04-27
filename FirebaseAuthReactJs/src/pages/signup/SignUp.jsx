@@ -15,7 +15,8 @@ const SignUp = () => {
         setInputValue({...inputValue, [componentName]: value}); 
     };
   return (
-    <div>
+    <>
+        <h1>Sign Up form</h1>
         <form onSubmit={handleSubmit} style={form}>
             <Input 
                 type="text"
@@ -31,7 +32,7 @@ const SignUp = () => {
                 <button type="submit">submit</button>
             </div>
         </form>
-    </div>
+    </>
   )
 }
 

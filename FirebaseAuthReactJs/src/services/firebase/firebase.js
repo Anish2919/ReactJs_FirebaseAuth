@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import {GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth'; 
-import { addDoc, collection, getDoc, getFirestore, query, where} from 'firebase/firestore'; 
+import { addDoc, collection, getDocs, getFirestore, query, where} from 'firebase/firestore'; 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -26,28 +26,29 @@ const auth = getAuth(app);
 
 
 // Google Auth Provider 
-import {} from 'firebase/auth'; 
 
 const googleProvider = new GoogleAuthProvider(); 
-const loginWithGoogle = async() => {
+const loginWithGoogle = async () => {
   try {
-    const res = await signInWithPopup(auth, googleProvider); 
-    const user = res.user; 
-    const q = query(collection(db, "users"), where("uid", "==", user.uid)); 
-    const docs = await getDoc(q); 
-    if(docs.docs.length === 0) {
+    const res = await signInWithPopup(auth, googleProvider);
+    const user = res.user;
+    const q = query(collection(db, "users"), where("uid", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.docs.length === 0) {
       await addDoc(collection(db, "users"), {
-        uid: user.uid, 
-        name:user.displayName, 
-        authProvider: "google", 
-        email: user.email, 
-      }); 
+        uid: user.uid,
+        name: user.displayName,
+        authProvider: "google",
+        email: user.email,
+      });
     }
   } catch (error) {
-    console.error(error); 
-    alert(error.message); 
+    console.error(error);
+    console.log('error from login with google:', error);
+    alert(error.message);
   }
-} 
+};
+
 
 // SignIn using email and password 
 const loginWithEmailandPassword = async(email, password) => {
@@ -90,7 +91,7 @@ const sendPasswordReset = async(email) => {
 
 // logout function 
 const logout = () => {
-  signOut();  
+   signOut(auth); 
 }
 
 export {
