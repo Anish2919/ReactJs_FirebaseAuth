@@ -1,28 +1,7 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-import {GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth'; 
-import { addDoc, collection, getDocs, getFirestore, query, where} from 'firebase/firestore'; 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {GoogleAuthProvider, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth'; 
+import { addDoc, collection, getDocs, query, where} from 'firebase/firestore'; 
+import { auth, db } from './firebaseSetup';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyC1QWSxFq2CJ2hyj2kvop8u-yys1Axvpvc",
-  authDomain: "fir-authreactjs-d4c80.firebaseapp.com",
-  projectId: "fir-authreactjs-d4c80",
-  storageBucket: "fir-authreactjs-d4c80.appspot.com",
-  messagingSenderId: "291575388351",
-  appId: "1:291575388351:web:299959f1027e1af3da4e0a",
-  measurementId: "G-F8M08D916N"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
-const db = getFirestore(app); 
-const auth = getAuth(app); 
 
 
 // Google Auth Provider 
@@ -79,13 +58,33 @@ const registerWithEmailandPassword = async(name, email, password) => {
 }
 
 // send password reset link 
-const sendPasswordReset = async(email) => {
+const resetPassword = async(email) => {
   try {
-    await sendPasswordReset(auth, email); 
+    // check if the email address exists in the 'users' collection 
+    const emailExists = await checkEmailExists(email); 
+    if(!emailExists) {
+      alert('email doesnot exists! please signIn'); 
+      return false; 
+    }
+
+    await sendPasswordResetEmail(auth, email); 
     alert('password reset link sent.'); 
   } catch (error) {
-    console.error('error from reset:', error); 
-    alert('error from reset: ', error.message); 
+    alert("Something went wrong!"); 
+    console.log('error message: ', error.message); 
+    return; 
+  }
+}
+
+// check emaile exits 
+const checkEmailExists = async (email) => {
+  try {
+    const q = query(collection(db, 'users'), where('email', '==', email)); 
+    const querySnapshot = await getDocs(q); 
+    return !querySnapshot.empty;    
+  } catch (error) {
+    console.error('Error checking email existance: ', error); 
+    return false; 
   }
 }
 
@@ -95,11 +94,9 @@ const logout = () => {
 }
 
 export {
-  auth, 
-  db, 
   loginWithGoogle, 
   loginWithEmailandPassword, 
   registerWithEmailandPassword, 
-  sendPasswordReset, 
+  resetPassword, 
   logout, 
 }

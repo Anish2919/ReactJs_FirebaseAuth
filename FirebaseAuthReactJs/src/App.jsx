@@ -4,13 +4,14 @@ import './App.css'
 // import SignIn from './pages/signin/SignIn';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { logout } from './services/firebase/firebase';
-import useAuthorizedHook from './services/firebase/hooks/useAuthorizedHook';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from './services/firebase/firebaseSetup';
 
 
 function App() {
   const navigate = useNavigate(); 
 
-  const {user} = useAuthorizedHook(); 
+  const [user] = useAuthState(auth); 
   
   function loggingOut() {
     logout(); 

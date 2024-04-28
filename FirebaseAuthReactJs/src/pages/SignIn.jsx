@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import Input from "../../components/shared/Input";
-import {useAuthState} from 'react-firebase-hooks/auth'; 
-import { auth, loginWithEmailandPassword, loginWithGoogle } from "../../services/firebase/firebase";
-import { useNavigate } from "react-router-dom";
+import Input from "../components/shared/Input";
+import { loginWithEmailandPassword, loginWithGoogle } from "../services/firebase/firebase";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../services/firebase/firebaseSetup";
+
 
 const SignIn = () => {
   const [inputValue, setInputValue] = useState({ email: "", password: "" });
@@ -16,8 +18,10 @@ const SignIn = () => {
         setInputValue({...inputValue, [componentName]: value}); 
     };
 
-    // working with firebase 
+    // firebase auth 
     const [user] = useAuthState(auth); 
+
+    // working with firebase 
     useEffect(() => {
       if(user) {
         navigate('/dashboard'); 
@@ -32,7 +36,7 @@ const SignIn = () => {
 
     const handleLoginWithEmailandPassword = (e) => {
       e.preventDefault(); 
-      loginWithEmailandPassword(inputValue); 
+      loginWithEmailandPassword(email, password); 
     }
 
   return (
@@ -52,6 +56,9 @@ const SignIn = () => {
             <div>
                 <button onClick={handleLoginWithEmailandPassword}>Login with Email and Password</button>
                 <button onClick={handleLoginWithGoogle}>Login with Google</button>
+            </div>
+            <div>
+                Forgot Password? <Link to="/reset">click here</Link>
             </div>
         </form>
     </>

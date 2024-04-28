@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'; 
 
-const Input = ({handleChange, type, label="username", value}) => {
+const Input = ({handleChange, type, label="username", value, placeholder=""}) => {
     const captalizedLabel = label.charAt(0).toUpperCase() + label.substring(1);
   return (
     <>
@@ -9,7 +9,7 @@ const Input = ({handleChange, type, label="username", value}) => {
                 style={inputStyle}
                 onChange={handleChange} 
                 type={type}
-                placeholder={label}
+                placeholder={placeholder ? placeholder : label}
                 value={value}
                 name={label}/>
         </label>
@@ -26,6 +26,7 @@ Input.propTypes = {
     type : PropTypes.string, 
     label : PropTypes.string, 
     value: PropTypes.string, 
+    placeholder: PropTypes.string, 
 }
 
 export default Input
